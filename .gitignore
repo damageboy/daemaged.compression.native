@@ -1,6 +1,1 @@
-obj/
-bin/
-*.suo
-*.user
-*.DotSettings
-packages/*/
+nuget.package/runtimes/

@@ -5,6 +5,9 @@ CC=gcc
 CC_X86="$CC -m32"
 CC_X64="$CC -m64"
 
+gcc -v |& grep disable-multilib
+MULTILIB_ENABLED=$?
+
 X86_OUT=$PROJECT_ROOT/runtimes/${RID}-x86/native
 X64_OUT=$PROJECT_ROOT/runtimes/${RID}-x64/native
 
@@ -78,38 +81,33 @@ function compile_lzma {
 function test_output {
   FILE=$1
 
-  [[ -e "$FILE" ]] || (echo $FILE was not compiled... aborting...; exit 666)
+  if [[ ! -e "$FILE" ]]; then
+    echo $FILE was not compiled... aborting...
+    exit 666
+  fi
 }
 
-compile_lzo2 "$CC_X86" "$X86_OUT" x86
 compile_lzo2 "$CC_X64" "$X64_OUT" x64
 
-compile_bzip2 "$CC_X86" "$X86_OUT" x86
 compile_bzip2 "$CC_X64" "$X64_OUT" x64
-
-compile_lz4 "$CC_X86" "$X86_OUT" x86
 compile_lz4 "$CC_X64" "$X64_OUT" x64
-
-compile_zlib "$CC_X86" "$X86_OUT" i686 x86
 compile_zlib "$CC_X64" "$X64_OUT" amd64 x64
-
 compile_zstd "$CC_X86" "$X86_OUT" x86
 compile_zstd "$CC_X64" "$X64_OUT" x64
-
-compile_lzma "$CC_X86" "$X86_OUT" i686-pc-linux-gnu x86
 compile_lzma "$CC_X64" "$X64_OUT" x86_64-pc-linux-gnu x64
+
+if [[ "$MULTILIB_ENABLED" == "1" ]]; then
+  compile_lzo2 "$CC_X86" "$X86_OUT" x86
+  compile_bzip2 "$CC_X86" "$X86_OUT" x86
+  compile_lz4 "$CC_X86" "$X86_OUT" x86
+  compile_zlib "$CC_X86" "$X86_OUT" i686 x86
+  compile_lzma "$CC_X86" "$X86_OUT" i686-pc-linux-gnu x86
+fi
 
 echo -n Waiting for compilations to finish...
 wait
 sleep 5
 echo Done.
-
-test_output "$X86_OUT/libz.so"
-test_output "$X86_OUT/libbz2.so"
-test_output "$X86_OUT/liblzma.so"
-test_output "$X86_OUT/liblz4.so"
-test_output "$X86_OUT/liblzo2.so"
-test_output "$X86_OUT/libzstd.so"
 
 test_output "$X64_OUT/libz.so"
 test_output "$X64_OUT/libbz2.so"
@@ -118,7 +116,18 @@ test_output "$X64_OUT/liblz4.so"
 test_output "$X64_OUT/liblzo2.so"
 test_output "$X64_OUT/libzstd.so"
 
+if [[ "$MULTILIB_ENABLED" == "1" ]]; then
+  test_output "$X86_OUT/libz.so"
+  test_output "$X86_OUT/libbz2.so"
+  test_output "$X86_OUT/liblzma.so"
+  test_output "$X86_OUT/liblz4.so"
+  test_output "$X86_OUT/liblzo2.so"
+  test_output "$X86_OUT/libzstd.so"
+fi
+
 echo Stripping shared objects...
-echo Before strip: $(du -chs $X86_OUT/ $X64_OUT/ | tail -1 | cut -f 1)
-for so in $X86_OUT/*.so $X64_OUT/*.so; do strip --strip-unneeded $so; done
-echo After strip: $(du -chs $X86_OUT/ $X64_OUT/ | tail -1 | cut -f 1)
+echo Before strip: $(du -chs $PROJECT_ROOT/runtimes/${RID}*/native/*.so | tail -1 | cut -f 1)
+for so in $PROJECT_ROOT/runtimes/${RID}*/native/*.so; do 
+  strip --strip-unneeded $so
+done
+echo After strip: $(du -chs $PROJECT_ROOT/runtimes/${RID}*/native/*.so | tail -1 | cut -f 1)

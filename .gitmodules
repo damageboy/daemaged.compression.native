@@ -1,12 +1,12 @@
 [submodule "src/bzip2"]
 	path = src/bzip2
-	url = git@github.com:damageboy/bzip2
+	url = https://github.com/damageboy/bzip2
 [submodule "src/lzo2"]
 	path = src/lzo2
-	url = git@github.com:damageboy/lzo2
+	url = https://github.com/damageboy/lzo2
 [submodule "src/zlib-ng"]
 	path = src/zlib-ng
-	url = git@github.com:Dead2/zlib-ng.git
+	url = https://github.com/Dead2/zlib-ng.git
 [submodule "src/lz4"]
 	path = src/lz4
 	url = https://github.com/lz4/lz4.git

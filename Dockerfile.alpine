@@ -1,0 +1,8 @@
+FROM alpine:3.7
+WORKDIR /nativebinaries
+
+RUN apk add --no-cache bash build-base cmake automake gettext-dev git autoconf libtool
+
+COPY . /nativebinaries/
+
+CMD ["/bin/bash", "-c", "/nativebinaries/build-native-linux.sh"]

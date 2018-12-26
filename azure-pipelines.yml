@@ -1,0 +1,147 @@
+name: 0.6.6-ci.$(Date:yyyyMMdd).$(Rev:r)
+variables:
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  NoPackageAnalysis: true  # Suppresses warning about SemVer 2.0.0 version suffixes when packing
+  CI_VERSION: $(Build.BuildNumber) # Equal to the 'name' field above.
+  TERM: xterm
+
+jobs:
+- job: alpine
+  pool:
+    vmImage: 'Ubuntu-16.04'
+
+  steps:
+  - script: ./dockerbuild.sh alpine
+    displayName: 'Build on alpine'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: 'nuget.package/runtimes'
+      artifactName: native_alpine
+    displayName: 'Publish artifacts'
+
+- job: debian_9
+  pool:
+    vmImage: 'Ubuntu-16.04'
+
+  steps:
+  - script: ./dockerbuild.sh debian.9
+    displayName: 'Build on debian.9'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: 'nuget.package/runtimes'
+      artifactName: native_debian_9
+    displayName: 'Publish artifacts'
+
+- job: rhel_7
+  pool:
+    vmImage: 'Ubuntu-16.04'
+
+  steps:
+  - script: ./dockerbuild.sh rhel.7
+    displayName: 'Build on rhel.7'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: 'nuget.package/runtimes'
+      artifactName: native_rhel_7
+    displayName: 'Publish artifacts'
+
+- job: ubuntu_14_04
+  pool:
+    vmImage: 'Ubuntu-16.04'
+
+  steps:
+  - script: ./dockerbuild.sh ubuntu.14.04
+    displayName: 'Build on ubuntu.14.04'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: 'nuget.package/runtimes'
+      artifactName: native_ubutnu_14_04
+    displayName: 'Publish artifacts'
+
+- job: ubuntu_16_04
+  pool:
+    vmImage: 'Ubuntu-16.04'
+
+  steps:
+  - script: ./dockerbuild.sh ubuntu.16.04
+    displayName: 'Build on ubuntu.16.04'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: 'nuget.package/runtimes'
+      artifactName: native_ubutnu_16_04
+    displayName: 'Publish artifacts'
+
+- job: ubuntu_18_04
+  pool:
+    vmImage: 'Ubuntu-16.04'
+
+  steps:
+  - script: ./dockerbuild.sh ubuntu.18.04
+    displayName: 'Build on ubuntu.18.04'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: 'nuget.package/runtimes'
+      artifactName: native_ubutnu_18_04
+    displayName: 'Publish artifacts'
+
+- job: windows
+  pool:
+    vmImage: vs2017-win2016
+
+  steps:
+  - script: bash ./build-native-windows.sh
+    displayName: 'Build on windows'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: 'nuget.package/runtimes'
+      artifactName: native_windows
+    displayName: 'Publish arficats'
+
+- job: nuget
+  dependsOn:
+  - alpine
+  - debian_9
+  - rhel_7
+  - ubuntu_14_04
+  - ubuntu_16_04
+  - ubuntu_18_04
+  - windows
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  
+  steps:
+  # Download Build Artifacts
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      #artifactName: windows
+      #itemPattern: '**' # Optional
+      downloadPath: 'nuget.package' 
+      #parallelizationLimit: '8' # Optional
+    displayName: 'Download artifacts'
+
+  - script: |
+      cd nuget.package &&
+      for z in *.zip; do
+        unzip $z
+      done
+    displayName: 'unzip artifacts'
+
+  - task: NuGetCommand@2
+    inputs:
+      command: 'Pack'
+      packagesToPack: 'nuget.package/Daemaged.Compression.Native.nuspec'
+      #versioningScheme: 'off' # Options: off, byPrereleaseNumber, byEnvVar, byBuildNumber
+      #versionEnvVar: # Required when versioningScheme == ByEnvVar
+      #majorVersion: '1' # Required when versioningScheme == ByPrereleaseNumber
+      #minorVersion: '0' # Required when versioningScheme == ByPrereleaseNumber
+      #patchVersion: '0' # Required when versioningScheme == ByPrereleaseNumber
+      #packTimezone: 'utc' # Required when versioningScheme == ByPrereleaseNumber# Options: utc, local
+      #verbosityPack: 'Detailed' # Options: quiet, normal, detailed
