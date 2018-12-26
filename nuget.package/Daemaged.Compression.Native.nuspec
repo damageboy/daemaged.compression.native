@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Daemaged.Compression.Native</id>
+    <version>0.6.6</version>
+    <authors>Dan Shechter</authors>
+    <owners>nulltoken</owners>
+    <licenseUrl>https://raw.githubusercontent.com/libgit2/libgit2/master/COPYING</licenseUrl>
+    <projectUrl></projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Native binaries for Daemaged.Compression</description>
+  </metadata>
+</package>
