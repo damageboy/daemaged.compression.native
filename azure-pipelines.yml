@@ -4,7 +4,6 @@ variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   NoPackageAnalysis: true  # Suppresses warning about SemVer 2.0.0 version suffixes when packing
   CI_VERSION: $(Build.BuildNumber) # Equal to the 'name' field above.
-  TERM: xterm
 
 jobs:
 - job: alpine
@@ -121,25 +120,57 @@ jobs:
   # Download Build Artifacts
   - task: DownloadBuildArtifacts@0
     inputs:
-      #artifactName: windows
-      #itemPattern: '**' # Optional
-      downloadPath: 'nuget.package' 
-      #parallelizationLimit: '8' # Optional
+      artifactName: native_alpine
+      downloadPath: artifacts 
+    displayName: 'Download artifacts'
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: native_debian_9
+      downloadPath: artifacts 
+    displayName: 'Download artifacts'
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: native_rhel_7
+      downloadPath: artifacts 
+    displayName: 'Download artifacts'
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: native_ubutnu_14_04
+      downloadPath: artifacts 
+    displayName: 'Download artifacts'
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: native_ubutnu_16_04
+      downloadPath: artifacts 
+    displayName: 'Download artifacts'
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: native_ubutnu_18_04
+      downloadPath: artifacts 
+    displayName: 'Download artifacts'
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: native_windows
+      downloadPath: artifacts 
     displayName: 'Download artifacts'
 
   - script: |
-      cd nuget.package &&
-      for z in *.zip; do
-        unzip $z
-      done
-    displayName: 'unzip artifacts'
+      mkdir -p nuget.package/runtimes
+      mv artifacts/native_*/* nuget.package/runtimes
+    displayName: 'merge artifacts'
 
   - task: NuGetCommand@2
     inputs:
-      command: 'Pack'
+      command: 'pack'
       packagesToPack: 'nuget.package/Daemaged.Compression.Native.nuspec'
-      #versioningScheme: 'off' # Options: off, byPrereleaseNumber, byEnvVar, byBuildNumber
-      #versionEnvVar: # Required when versioningScheme == ByEnvVar
+      versioningScheme: 'byEnvVar'
+      versionEnvVar: 'CI_VERSION'
       #majorVersion: '1' # Required when versioningScheme == ByPrereleaseNumber
       #minorVersion: '0' # Required when versioningScheme == ByPrereleaseNumber
       #patchVersion: '0' # Required when versioningScheme == ByPrereleaseNumber
