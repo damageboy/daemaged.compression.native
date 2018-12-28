@@ -4,9 +4,9 @@
     <id>Daemaged.Compression.Native</id>
     <version>0.6.6</version>
     <authors>Dan Shechter</authors>
-    <owners>nulltoken</owners>
-    <licenseUrl>https://raw.githubusercontent.com/libgit2/libgit2/master/COPYING</licenseUrl>
-    <projectUrl></projectUrl>
+    <owners>Dan Shechter</owners>
+    <licenseUrl>https://github.com/damageboy/daemaged.compression.native/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/damageboy/daemaged.compression.native</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Native binaries for Daemaged.Compression</description>
   </metadata>
