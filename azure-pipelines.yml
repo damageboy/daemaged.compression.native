@@ -166,6 +166,7 @@ jobs:
     displayName: 'merge artifacts'
 
   - task: NuGetCommand@2
+    displayName: 'NuGet Push'
     inputs:
       command: 'pack'
       packagesToPack: 'nuget.package/Daemaged.Compression.Native.nuspec'
@@ -176,3 +177,10 @@ jobs:
       #patchVersion: '0' # Required when versioningScheme == ByPrereleaseNumber
       #packTimezone: 'utc' # Required when versioningScheme == ByPrereleaseNumber# Options: utc, local
       #verbosityPack: 'Detailed' # Options: quiet, normal, detailed
+
+  - task: NuGetCommand@2
+    displayName: 'NuGet Push'
+    inputs:
+      command: push
+      publishVstsFeed: '731945cc-f879-47a4-b66f-5a012b7244e0'
+      allowPackageConflicts: true
