@@ -1,4 +1,6 @@
-[![Build Status](https://dev.azure.com/damageboy/daemaged.compression.native/_apis/build/status/damageboy.daemaged.compression.native?branchName=master)](https://dev.azure.com/damageboy/daemaged.compression.native/_build/latest?definitionId=1?branchName=master)
+| Build | Official NuGet | CI Nuget
+--------|----------------|---------
+| [![Build Status](https://dev.azure.com/damageboy/daemaged.compression.native/_apis/build/status/damageboy.daemaged.compression.native?branchName=master)](https://dev.azure.com/damageboy/daemaged.compression.native/_build/latest?definitionId=1?branchName=master) | | [![Daemaged.Compression.Native package in daemaged feed in Azure Artifacts](https://feeds.dev.azure.com/damageboy/_apis/public/Packaging/Feeds/731945cc-f879-47a4-b66f-5a012b7244e0/Packages/ee3354ee-26ef-4eff-8bd2-eaafe2e07ceb/Badge)](https://dev.azure.com/damageboy/daemaged.compression.native/_packaging?_a=package&feed=731945cc-f879-47a4-b66f-5a012b7244e0&package=ee3354ee-26ef-4eff-8bd2-eaafe2e07ceb&preferRelease=true)
 
 # daemaged.compression.native
 
