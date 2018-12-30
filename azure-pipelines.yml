@@ -182,5 +182,6 @@ jobs:
     displayName: 'NuGet Push'
     inputs:
       command: push
-      publishVstsFeed: '731945cc-f879-47a4-b66f-5a012b7244e0'
+      #publishVstsFeed: '731945cc-f879-47a4-b66f-5a012b7244e0'
+      publishVstsFeed: 'daemaged'
       allowPackageConflicts: true
